@@ -81,6 +81,37 @@
     });
   }
 
+  const countyDatalist = document.getElementById('county-datalist');
+  if (countyDatalist) {
+    counties.forEach((county) => {
+      const option = document.createElement('option');
+      option.value = county.name;
+      countyDatalist.appendChild(option);
+    });
+  }
+
+  // WhatsApp quotation helper — every WhatsApp entry point uses this wording.
+  const WHATSAPP_NUMBER = '254717986463';
+  function quotationMessage(destination) {
+    const dest = String(destination || '').trim();
+    return dest ? `Kindly give me a quotation from Nairobi to ${dest}` : 'Kindly give me a quotation from Nairobi to ';
+  }
+  function whatsappUrl(destination, extraLines = []) {
+    const lines = [quotationMessage(destination), ...extraLines];
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`;
+  }
+  function openWhatsApp(destination, extraLines = []) {
+    const link = document.createElement('a');
+    link.href = whatsappUrl(destination, extraLines);
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.setAttribute('aria-hidden', 'true');
+    link.tabIndex = -1;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+
   if (mapDots && routePath && routeDestination && routeIndex && routeProgress && mapDestination && mapDestinationHalo) {
     const dotElements = counties.map((county, index) => {
       const dot = makeSvgElement('circle', {
@@ -288,34 +319,87 @@
       if (!quoteForm.reportValidity()) return;
 
       const values = new FormData(quoteForm);
-      const lines = [
-        'Hello Lakeside Transporters, I would like to request a moving quote.',
+      const destination = String(values.get('destination') || '').trim();
+      const extraLines = [
         '',
         `Name: ${String(values.get('name') || '').trim()}`,
         `Phone: ${String(values.get('phone') || '').trim()}`,
         `Move type: ${String(values.get('service') || '').trim()}`,
         `Pickup: Nairobi${String(values.get('pickup') || '').trim() ? ` — ${String(values.get('pickup')).trim()}` : ''}`,
-        `Destination county: ${String(values.get('destination') || '').trim()}`
+        `Destination county: ${destination}`
       ];
       const date = formatMovingDate(String(values.get('date') || ''));
       const details = String(values.get('details') || '').trim();
-      if (date) lines.push(`Preferred date: ${date}`);
-      if (details) lines.push(`More about the move: ${details}`);
-      lines.push('', 'Please let me know the next steps and an estimate. Thank you.');
+      if (date) extraLines.push(`Preferred date: ${date}`);
+      if (details) extraLines.push(`More about the move: ${details}`);
+      extraLines.push('', 'Please let me know the next steps and an estimate. Thank you.');
 
-      const whatsappUrl = `https://wa.me/254717986463?text=${encodeURIComponent(lines.join('\n'))}`;
-      const link = document.createElement('a');
-      link.href = whatsappUrl;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.setAttribute('aria-hidden', 'true');
-      link.tabIndex = -1;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      openWhatsApp(destination, extraLines);
 
       if (formFeedback) formFeedback.textContent = 'Your WhatsApp draft is ready. Please review it and tap Send in WhatsApp.';
       showToast('Your move details are ready to review in WhatsApp.');
+    });
+  }
+
+  // Destination picker for every standalone WhatsApp button.
+  // Clicking any [data-whatsapp-quote] button asks "to where?" first,
+  // then opens WhatsApp pre-filled: "Kindly give me a quotation from Nairobi to [destination]"
+  const waPanel = document.getElementById('whatsapp-quote-panel');
+  const waForm = document.getElementById('whatsapp-quote-form');
+  const waDestination = document.getElementById('whatsapp-destination');
+  const waPreviewDest = document.getElementById('whatsapp-quote-preview-dest');
+  const waClose = document.getElementById('whatsapp-quote-close');
+  let waLastTrigger = null;
+
+  function updateWaPreview() {
+    if (waPreviewDest && waDestination) {
+      waPreviewDest.textContent = waDestination.value.trim() || '…';
+    }
+  }
+  function setWaPanelOpen(isOpen) {
+    if (!waPanel) return;
+    waPanel.hidden = !isOpen;
+    if (!isOpen && waLastTrigger) waLastTrigger.focus();
+  }
+  function currentFormDestination() {
+    return destinationSelect && destinationSelect.value ? destinationSelect.value : '';
+  }
+
+  document.querySelectorAll('[data-whatsapp-quote]').forEach((trigger) => {
+    trigger.addEventListener('click', (event) => {
+      if (!waPanel || !waDestination) return; // fallback: plain wa.me link
+      event.preventDefault();
+      waLastTrigger = trigger;
+      const preset = currentFormDestination();
+      if (preset && !waDestination.value.trim()) waDestination.value = preset;
+      updateWaPreview();
+      setWaPanelOpen(true);
+      waDestination.focus();
+      waDestination.select();
+    });
+  });
+
+  if (waDestination) waDestination.addEventListener('input', updateWaPreview);
+  if (waClose) waClose.addEventListener('click', () => setWaPanelOpen(false));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && waPanel && !waPanel.hidden) setWaPanelOpen(false);
+  });
+  document.addEventListener('click', (event) => {
+    if (!waPanel || waPanel.hidden) return;
+    if (waPanel.contains(event.target)) return;
+    if (event.target.closest('[data-whatsapp-quote]')) return;
+    setWaPanelOpen(false);
+  });
+
+  if (waForm) {
+    waForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!waForm.reportValidity()) return;
+      const destination = waDestination ? waDestination.value.trim() : '';
+      if (!destination) return;
+      openWhatsApp(destination);
+      setWaPanelOpen(false);
+      showToast('Your quotation request is ready to review in WhatsApp.');
     });
   }
 
