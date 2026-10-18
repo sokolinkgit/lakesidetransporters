@@ -307,6 +307,33 @@ svg { display: block; }
 .review-arrow:hover { color: #fff; background: var(--orange); border-color: var(--orange); }
 .review-page { min-width: 49px; color: #738195; font-size: 9px; font-weight: 800; text-align: center; }
 
+.gallery-section { background: var(--paper); }
+.gallery-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.gallery-card { position: relative; margin: 0; overflow: hidden; border-radius: 16px; background: #dfe3e6; aspect-ratio: 1.18; box-shadow: 0 10px 30px rgba(16,45,90,.08); }
+.gallery-card-wide { grid-column: span 2; aspect-ratio: 2.48; }
+.gallery-card img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.2,.7,.3,1); }
+.gallery-card:hover img { transform: scale(1.05); }
+.gallery-card figcaption { position: absolute; right: 0; bottom: 0; left: 0; display: flex; flex-direction: column; gap: 1px; padding: 26px 14px 12px; color: #fff; background: linear-gradient(180deg, transparent, rgba(9,28,57,.78)); }
+.gallery-card figcaption strong { font-size: 12px; font-weight: 820; letter-spacing: -.01em; }
+.gallery-card figcaption span { color: rgba(255,255,255,.72); font-size: 9px; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; }
+.gallery-cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-top: 26px; padding: 20px 22px; background: #fff; border: 1px solid var(--line); border-radius: 14px; }
+.gallery-cta p { margin: 0; color: var(--navy); font-size: 14px; font-weight: 760; }
+.gallery-cta .button { border: 0; cursor: pointer; }
+
+.whatsapp-quote-panel { position: fixed; z-index: 120; right: 21px; bottom: 88px; width: min(360px, calc(100vw - 28px)); padding: 22px 22px 18px; color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 17px; box-shadow: 0 25px 65px rgba(9,28,57,.28); }
+.whatsapp-quote-panel[hidden] { display: none; }
+.whatsapp-quote-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.whatsapp-quote-head h3 { margin: 4px 0 0; color: var(--navy); font-size: 19px; font-weight: 830; letter-spacing: -.04em; line-height: 1.2; }
+.whatsapp-quote-close { display: grid; width: 32px; height: 32px; flex: 0 0 32px; place-items: center; color: var(--navy); background: #f1f4f7; border: 0; border-radius: 50%; font-size: 20px; line-height: 1; cursor: pointer; }
+.whatsapp-quote-close:hover { color: #fff; background: var(--orange); }
+#whatsapp-quote-form { display: grid; gap: 12px; }
+.whatsapp-quote-route { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.whatsapp-quote-route strong { color: var(--navy); font-size: 13px; letter-spacing: 0; text-transform: none; }
+.whatsapp-quote-preview { margin: 0; padding: 11px 12px; color: #42546b; background: #eef8f2; border: 1px solid #cfeadb; border-radius: 8px; font-size: 10px; line-height: 1.6; }
+.whatsapp-quote-preview em { color: #14532d; font-weight: 700; }
+.whatsapp-quote-submit { width: 100%; min-height: 48px; border: 0; cursor: pointer; color: #fff; background: #17b969; }
+.whatsapp-quote-submit:hover { background: #12a95e; }
+
 .contact-section { position: relative; overflow: hidden; padding: 91px 0 98px; color: #fff; background: var(--navy-deep); isolation: isolate; }
 .contact-section::before { position: absolute; z-index: -1; top: -350px; left: -260px; width: 690px; height: 690px; content: ""; border: 1px solid rgba(174,202,231,.1); border-radius: 50%; box-shadow: 0 0 0 50px rgba(174,202,231,.025), 0 0 0 100px rgba(174,202,231,.018); }
 .contact-section::after { position: absolute; z-index: -1; right: -80px; bottom: -250px; width: 500px; height: 500px; content: ""; border-radius: 50%; background: radial-gradient(circle, rgba(243,108,36,.12), transparent 70%); }
@@ -407,6 +434,8 @@ svg { display: block; }
 }
 
 @media (max-width: 790px) {
+  .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gallery-card-wide { aspect-ratio: 2.36; }
   .announcement-inner { min-height: 32px; }
   .nav-shell { min-height: 73px; }
   .brand-mark { width: 49px; height: 49px; }
@@ -519,6 +548,13 @@ svg { display: block; }
   .section-heading .eyebrow { margin-bottom: 13px; font-size: 8px; }
   .section-heading h2 { font-size: clamp(33px, 8vw, 45px); }
   .section-lede { max-width: 430px; margin: 14px 0 0; font-size: 11px; }
+  .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .gallery-card { border-radius: 12px; }
+  .gallery-card figcaption { padding: 20px 10px 9px; }
+  .gallery-card figcaption strong { font-size: 10px; }
+  .gallery-card figcaption span { font-size: 7px; }
+  .gallery-cta { padding: 16px; }
+  .whatsapp-quote-panel { right: 14px; bottom: 76px; }
   .service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .service-card { border-radius: 10px; }
   .service-image-link { aspect-ratio: 1.25; }
