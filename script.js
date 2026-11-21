@@ -91,7 +91,7 @@
   }
 
   // WhatsApp quotation helper — every WhatsApp entry point uses this wording.
-  const WHATSAPP_NUMBER = '254717986463';
+  const WHATSAPP_NUMBER = '254750932476';
   function quotationMessage(destination) {
     const dest = String(destination || '').trim();
     return dest ? `Kindly give me a quotation from Nairobi to ${dest}` : 'Kindly give me a quotation from Nairobi to ';
@@ -153,10 +153,10 @@
     }
   }
 
-  // A genuine review feed can be supplied as window.LAKESIDE_VERIFIED_REVIEWS.
+  // A genuine review feed can be supplied as window.ETS_VERIFIED_REVIEWS.
   // Keep this empty until the business connects a permitted source or provides authentic review content.
-  const reviewData = Array.isArray(window.LAKESIDE_VERIFIED_REVIEWS)
-    ? window.LAKESIDE_VERIFIED_REVIEWS.filter((review) => review && typeof review.text === 'string' && review.text.trim() && typeof review.name === 'string' && review.name.trim())
+  const reviewData = Array.isArray(window.ETS_VERIFIED_REVIEWS)
+    ? window.ETS_VERIFIED_REVIEWS.filter((review) => review && typeof review.text === 'string' && review.text.trim() && typeof review.name === 'string' && review.name.trim())
     : [];
   const reviewGrid = document.getElementById('review-grid');
   const reviewEmpty = document.getElementById('reviews-empty');
